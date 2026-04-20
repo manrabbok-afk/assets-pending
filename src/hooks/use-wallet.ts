@@ -31,16 +31,26 @@ export function useWallet() {
 
   useEffect(() => {
     if (!user) return;
-    const channel = supabase
-      .channel('wallet-changes')
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'wallets',
-        filter: `user_id=eq.${user.id}`,
-      }, () => { fetchBalances(); })
+    // Create a unique channel name per user to avoid re-subscribe-after-subscribe errors
+    // (Supabase realtime forbids adding `.on()` handlers to an already-subscribed channel.)
+    const channel = supabase.channel(`wallet-changes-${user.id}`);
+    channel
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'wallets',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          fetchBalances();
+        }
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, fetchBalances]);
 
   return { balances, totalUsd, selectedCurrency, setSelectedCurrency, loading: balancesLoading, refetch: fetchBalances };
