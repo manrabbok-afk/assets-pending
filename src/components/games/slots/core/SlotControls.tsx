@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Play, Square, ChevronDown, Repeat, BookOpen, Sparkles } from 'lucide-react';
+import { Zap, Play, Square, ChevronDown, Repeat, BookOpen, Sparkles, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export type AutoCount = number | 'infinite';
@@ -70,6 +70,13 @@ export default function SlotControls({
     if (nextIdx < 0) nextIdx = 0;
     if (nextIdx >= PRESETS.length) nextIdx = PRESETS.length - 1;
     setBetAmount(String(PRESETS[nextIdx]));
+  };
+
+  const setMaxBet = () => {
+    // Pick the highest preset <= balance, or the smallest preset if balance is tiny.
+    const affordable = PRESETS.filter(p => p <= Math.max(0, balance));
+    const max = affordable.length ? affordable[affordable.length - 1] : PRESETS[0];
+    setBetAmount(String(max));
   };
 
   const spinBtnClass = cn(
@@ -163,6 +170,17 @@ export default function SlotControls({
             disabled={spinning || autoSpinning}
             className="h-8 w-8 rounded-md bg-surface hover:bg-muted text-foreground font-bold disabled:opacity-40"
           >+</button>
+          <button
+            type="button"
+            onClick={setMaxBet}
+            disabled={spinning || autoSpinning}
+            className="h-8 px-2 rounded-md bg-gradient-to-br from-amber-400 to-amber-600 text-black font-display font-extrabold text-[10px] tracking-wider uppercase hover:brightness-110 active:scale-95 disabled:opacity-40 flex items-center gap-1"
+            title="Max bet"
+            aria-label="Max bet"
+          >
+            <Maximize2 className="w-3 h-3" />
+            Max
+          </button>
         </div>
 
         {/* Paylines tag */}
