@@ -117,19 +117,18 @@ export default function OlympusSlot() {
       parent,
       backgroundColor: '#0a0e1f',
       transparent: false,
-      scene: OlympusSlotScene,
+      // Don't auto-start — we manually start with events below to avoid
+      // a double-init that leaves the grid empty.
+      scene: [],
       scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-      callbacks: {
-        postBoot: (game) => {
-          gameRef.current = game;
-          requestAnimationFrame(() => {
-            sceneRef.current = game.scene.getScene('OlympusSlotScene') as OlympusSlotScene;
-          });
-        },
-      },
     };
     const game = new Phaser.Game(config);
+    game.scene.add('OlympusSlotScene', OlympusSlotScene, false);
     game.scene.start('OlympusSlotScene', { events: sceneEvents });
+    gameRef.current = game;
+    requestAnimationFrame(() => {
+      sceneRef.current = game.scene.getScene('OlympusSlotScene') as OlympusSlotScene;
+    });
 
     return () => {
       autoRef.current.stop = true;
