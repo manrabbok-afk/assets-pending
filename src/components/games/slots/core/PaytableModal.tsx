@@ -6,6 +6,7 @@
  */
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { forwardRef } from 'react';
 
 export interface PaytableEntry {
   id: string;
@@ -23,11 +24,15 @@ export interface PaytableModalProps {
   rules: string[];
 }
 
-export default function PaytableModal({ open, onClose, title, entries, rules }: PaytableModalProps) {
+const PaytableModal = forwardRef<HTMLDivElement, PaytableModalProps>(function PaytableModal(
+  { open, onClose, title, entries, rules },
+  ref,
+) {
   return (
     <AnimatePresence>
       {open && (
         <motion.div
+          ref={ref}
           className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           onClick={onClose}
