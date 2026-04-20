@@ -12,6 +12,7 @@ import { ReelStrip, type ReelSymbolData } from '../core/ReelStrip';
 import { evaluatePaylines, type Grid, type PaylineWin } from '../core/WinEvaluator';
 import { screenShake, flashColor, sparkleBurst } from '../core/SlotFX';
 import type { SlotTheme, ThemeSymbol } from './themes';
+import { getThemeSymbolAsset } from './themeAssets';
 
 export const COLS = 5;
 export const ROWS = 3;
@@ -100,12 +101,14 @@ export function makeThemedSceneClass(sceneKey: string) {
     }
 
     preload() {
-      // Load any pre-rendered PNG assets declared on the theme's symbols.
-      // Symbols without imageUrl fall back to procedural painting.
+      // Auto-resolve PNG/JPG/WebP assets per convention:
+      // src/assets/slots/{themeId}/{symbolId}.(png|jpg|webp)
+      // Falls back to symbol's explicit imageUrl, then to procedural paint().
       this.theme.symbols.forEach(sym => {
-        if (sym.imageUrl) {
+        const url = sym.imageUrl ?? getThemeSymbolAsset(this.theme.id, sym.id);
+        if (url) {
           const key = SYM_KEY(this.theme.id, sym.id) + '_img';
-          if (!this.textures.exists(key)) this.load.image(key, sym.imageUrl);
+          if (!this.textures.exists(key)) this.load.image(key, url);
         }
       });
     }
@@ -446,10 +449,11 @@ export function makeThemedSceneClass(sceneKey: string) {
       // Prefer pre-rendered PNG (loaded in preload) when available, else use
       // the procedural texture key generated from paint().
       const imgKey = SYM_KEY(this.theme.id, sym.id) + '_img';
-      const useImg = sym.imageUrl && this.textures.exists(imgKey);
+      const hasImg = (sym.imageUrl || getThemeSymbolAsset(this.theme.id, sym.id))
+        && this.textures.exists(imgKey);
       return {
         id: sym.id,
-        texture: useImg ? imgKey : SYM_KEY(this.theme.id, sym.id),
+        texture: hasImg ? imgKey : SYM_KEY(this.theme.id, sym.id),
         color: sym.color,
       };
     }
