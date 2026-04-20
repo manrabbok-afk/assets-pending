@@ -134,11 +134,27 @@ export default function DiceGame() {
       betAmount={betAmount} setBetAmount={setBetAmount} onPlay={handlePlay} playing={playing} history={historyPanel} extraControls={extraControls}>
       <div className="text-center space-y-4 w-full max-w-[400px] relative">
         {/* Dice Display */}
-        <div className="h-48 w-full rounded-xl overflow-hidden border border-border bg-gradient-to-b from-slate-900 to-slate-950 flex items-center justify-center">
+        <div className={`relative h-48 w-full rounded-xl overflow-hidden border bg-gradient-to-b from-slate-900 to-slate-950 flex items-center justify-center transition-colors duration-300 ${
+          result?.won ? 'border-neon-green/60 shadow-[0_0_30px_hsl(var(--neon-green)/0.35)]'
+          : result && !result.won ? 'border-neon-red/60 shadow-[0_0_30px_hsl(var(--neon-red)/0.35)]'
+          : 'border-border'
+        }`}>
+          <AnimatePresence>
+            {result && (
+              <motion.div
+                key={`flash-${result.roll}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.35, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.55 }}
+                className={`absolute inset-0 pointer-events-none ${result.won ? 'bg-neon-green' : 'bg-neon-red'}`}
+              />
+            )}
+          </AnimatePresence>
           <motion.div
-            animate={isRolling ? { rotate: [0, 360], scale: [1, 1.2, 1] } : {}}
-            transition={{ duration: 0.5, repeat: isRolling ? Infinity : 0 }}
-            className="text-6xl"
+            animate={isRolling ? { rotate: [0, 360, 720], scale: [1, 1.25, 1] } : result?.won ? { scale: [1, 1.15, 1] } : {}}
+            transition={isRolling ? { duration: 0.5, repeat: Infinity, ease: 'linear' } : { duration: 0.4 }}
+            className="text-6xl drop-shadow-[0_0_15px_currentColor]"
           >
             🎲
           </motion.div>
