@@ -63,8 +63,10 @@ export function getGameThumbnail(
     return SLOT_MAP['classic'] ?? PLACEHOLDER;
   }
 
-  // Live casino
+  // Live casino — strip "live-" prefix to match filenames
   if (cat === 'live' || cat === 'live-casino') {
+    const key = slug.startsWith('live-') ? slug.slice(5) : slug;
+    if (LIVE_MAP[key]) return LIVE_MAP[key];
     if (LIVE_MAP[slug]) return LIVE_MAP[slug];
     return PLACEHOLDER;
   }
