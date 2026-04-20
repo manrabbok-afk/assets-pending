@@ -91,4 +91,6 @@ const PaytableModal = forwardRef<HTMLDivElement, PaytableModalProps>(function Pa
       )}
     </AnimatePresence>
   );
-}
+});
+
+export default PaytableModal;
