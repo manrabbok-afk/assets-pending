@@ -357,7 +357,7 @@ export default function JetpackGame() {
           multiplier={Number(myBet?.cashout_multiplier ?? 0)}
           big={Number(myBet?.cashout_multiplier ?? 0) >= 5}
         />
-      </div>
+      </motion.div>
     </GameShell>
   );
 }
