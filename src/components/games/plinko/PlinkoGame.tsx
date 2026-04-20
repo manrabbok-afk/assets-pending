@@ -179,11 +179,31 @@ export default function PlinkoGame() {
     >
       <div className="text-center space-y-4 w-full max-w-[420px] relative">
         {/* Ball animation area */}
-        <div className="h-80 w-full rounded-xl overflow-hidden border border-border bg-gradient-to-b from-slate-900 to-slate-950 flex items-center justify-center">
+        <div className={`relative h-80 w-full rounded-xl overflow-hidden border bg-gradient-to-b from-slate-900 to-slate-950 flex items-start justify-center pt-4 transition-colors duration-300 ${
+          result && result.mult >= 2 ? 'border-neon-gold/60 shadow-[0_0_30px_hsl(var(--neon-gold)/0.35)]'
+          : result && result.mult < 1 ? 'border-neon-red/40' : 'border-border'
+        }`}>
+          {/* Pegs grid (decorative glow) */}
+          <div className="absolute inset-0 flex flex-col items-center justify-around pt-6 pb-16 pointer-events-none">
+            {Array.from({ length: ROWS }).map((_, row) => (
+              <div key={row} className="flex gap-3" style={{ marginLeft: row % 2 === 0 ? 0 : 10 }}>
+                {Array.from({ length: row + 3 }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    animate={playing ? { opacity: [0.3, 0.9, 0.3], scale: [1, 1.4, 1] } : { opacity: 0.3 }}
+                    transition={playing ? { duration: 0.4, delay: row * 0.08 + i * 0.02, repeat: Infinity } : {}}
+                    className="w-1.5 h-1.5 rounded-full bg-neon-blue/60 shadow-[0_0_4px_hsl(var(--neon-blue))]"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
           <motion.div
-            animate={ballPosition ? { y: [0, 280], x: ballPosition.x * 100 } : {}}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg"
+            key={playing ? 'dropping' : 'idle'}
+            initial={{ y: 0, opacity: playing ? 1 : 0.4 }}
+            animate={playing ? { y: 280, x: [0, -20, 15, -10, 8, 0] } : { opacity: 0.4 }}
+            transition={{ duration: 1.5, ease: 'easeIn', x: { duration: 1.5, ease: 'easeInOut' } }}
+            className="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 shadow-[0_0_15px_rgba(250,204,21,0.7)] relative z-10"
           />
         </div>
 
