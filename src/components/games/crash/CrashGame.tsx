@@ -325,15 +325,20 @@ export default function CrashGame() {
           </div>
         )}
 
-        {/* Crash Flash Effect */}
+        {/* Crash Flash + screen shake */}
         <AnimatePresence>
           {status === 'crashed' && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.4, 0] }}
+              key={`crash-${round?.id}`}
+              initial={{ opacity: 0, x: 0, y: 0 }}
+              animate={{
+                opacity: [0, 0.55, 0.25, 0],
+                x: [0, -10, 9, -7, 4, -2, 0],
+                y: [0, 5, -6, 3, -2, 0],
+              }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-              className="absolute inset-0 bg-neon-red/30 pointer-events-none z-20"
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              className="absolute inset-0 bg-neon-red/40 pointer-events-none z-20"
             />
           )}
         </AnimatePresence>

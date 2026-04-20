@@ -136,10 +136,13 @@ export default function Header() {
       {isAuthenticated ? (
         <div className="flex items-center gap-2">
           <div ref={balanceRef} className="relative">
-            <button onClick={() => { setShowBalances(!showBalances); playSound('click'); }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface border border-border text-sm hover:border-neon-blue/30 transition-colors">
+            <button
+              onClick={() => { setShowBalances(!showBalances); playSound('click'); }}
+              key={totalUsd}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface border border-border text-sm hover:border-neon-blue/30 transition-colors animate-scale-in"
+            >
               <Wallet className="w-4 h-4 text-neon-green" />
-              <span className="font-mono font-bold text-foreground">${totalUsd.toFixed(2)}</span>
+              <span className="font-mono font-bold text-foreground tabular-nums">${totalUsd.toFixed(2)}</span>
               <ChevronDown className="w-3 h-3 text-muted-foreground" />
             </button>
             {showBalances && (
