@@ -129,7 +129,7 @@ export function useCrashRound({ gameType, userId }: UseCrashRoundOptions) {
           game_type: b.game_type as 'crash' | 'jetpack',
           bet_amount: Number(b.bet_amount),
           auto_cashout: b.auto_cashout != null ? Number(b.auto_cashout) : null,
-          cashout_multiplier: b.cashed_out_at_multiplier != null ? Number(b.cashed_out_at_multiplier) : null,
+          cashout_multiplier: b.cashout_multiplier != null ? Number(b.cashout_multiplier) : null,
           payout: Number(b.payout ?? 0),
           status: b.status as 'placed' | 'cashed' | 'lost',
         }));
