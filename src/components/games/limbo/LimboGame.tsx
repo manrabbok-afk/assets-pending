@@ -141,12 +141,28 @@ export default function LimboGame() {
       betAmount={betAmount} setBetAmount={setBetAmount} onPlay={handlePlay} playing={playing} extraControls={extraControls} history={historyPanel}>
       <div className="text-center space-y-4 relative w-full max-w-md">
         {/* Multiplier Display */}
-        <div className="h-64 w-full rounded-xl overflow-hidden border border-border bg-gradient-to-b from-slate-900 to-slate-950 relative flex items-center justify-center">
+        <div className={`h-64 w-full rounded-xl overflow-hidden border bg-gradient-to-b from-slate-900 to-slate-950 relative flex items-center justify-center transition-colors duration-300 ${
+          result?.won ? 'border-neon-green/60 shadow-[0_0_40px_hsl(var(--neon-green)/0.35)]'
+          : result && !result.won ? 'border-neon-red/60 shadow-[0_0_40px_hsl(var(--neon-red)/0.35)]'
+          : 'border-border'
+        }`}>
+          <AnimatePresence>
+            {result && (
+              <motion.div
+                key={`limbo-flash-${result.value}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.3, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+                className={`absolute inset-0 pointer-events-none ${result.won ? 'bg-neon-green' : 'bg-neon-red'}`}
+              />
+            )}
+          </AnimatePresence>
           {/* Rocket icon animation */}
           <motion.div
-            animate={playing ? { y: [0, -20, 0], scale: [1, 1.1, 1] } : {}}
-            transition={{ duration: 0.5, repeat: playing ? Infinity : 0 }}
-            className="text-6xl"
+            animate={playing ? { y: [0, -30, 0], rotate: [-5, 5, -5], scale: [1, 1.15, 1] } : result?.won ? { y: [0, -60, -120], opacity: [1, 1, 0], scale: [1, 1.2, 0.8] } : {}}
+            transition={playing ? { duration: 0.6, repeat: Infinity, ease: 'easeInOut' } : { duration: 1.2, ease: 'easeOut' }}
+            className="text-6xl drop-shadow-[0_0_25px_rgba(167,139,250,0.6)]"
           >
             🚀
           </motion.div>
