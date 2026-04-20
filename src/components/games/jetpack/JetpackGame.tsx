@@ -263,9 +263,17 @@ export default function JetpackGame() {
       extraControls={extraControls}
       history={historyPanel}
     >
-      <div
+      <motion.div
         className="relative w-full overflow-hidden rounded-xl bg-gradient-to-b from-[#000008] to-[#0a0a1a] border border-border"
         style={{ aspectRatio: '16 / 9', minHeight: 320 }}
+        animate={
+          status === 'crashed'
+            ? { x: [0, -8, 7, -5, 3, -1, 0], y: [0, 4, -5, 2, -1, 0] }
+            : myBet?.status === 'cashed'
+            ? { scale: [1, 1.01, 1], boxShadow: ['0 0 0 0 hsl(var(--neon-green) / 0)', '0 0 40px 4px hsl(var(--neon-green) / 0.4)', '0 0 0 0 hsl(var(--neon-green) / 0)'] }
+            : {}
+        }
+        transition={{ duration: 0.6 }}
       >
         {/* 3D Scene with Loading Fallback */}
         <Suspense fallback={<GameLoadingScreen gameName="Jetpack" />}>
@@ -349,7 +357,7 @@ export default function JetpackGame() {
           multiplier={Number(myBet?.cashout_multiplier ?? 0)}
           big={Number(myBet?.cashout_multiplier ?? 0) >= 5}
         />
-      </div>
+      </motion.div>
     </GameShell>
   );
 }
