@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, Check, X, CheckCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,7 +16,7 @@ const TYPE_COLORS: Record<NotificationType, string> = {
   bonus: 'text-glow-gold bg-neon-gold/10',
 };
 
-export default function NotificationsDropdown() {
+const NotificationsDropdown = forwardRef<HTMLDivElement>((_props, _forwardedRef) => {
   const items = useNotifications((s) => s.items);
   const markRead = useNotifications((s) => s.markRead);
   const markAllRead = useNotifications((s) => s.markAllRead);
@@ -145,4 +145,6 @@ export default function NotificationsDropdown() {
       </AnimatePresence>
     </div>
   );
-}
+});
+NotificationsDropdown.displayName = 'NotificationsDropdown';
+export default NotificationsDropdown;
