@@ -31,10 +31,10 @@ export function useWallet() {
 
   useEffect(() => {
     if (!user) return;
-    // Create a unique channel name per user to avoid re-subscribe-after-subscribe errors
-    // (Supabase realtime forbids adding `.on()` handlers to an already-subscribed channel.)
-    const channel = supabase.channel(`wallet-changes-${user.id}`);
-    channel
+    // Unique channel per mount — avoids "cannot add callbacks after subscribe()"
+    // when StrictMode double-invokes effects or the user re-mounts the hook.
+    const channel = supabase
+      .channel(`wallet-${user.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
       .on(
         'postgres_changes',
         {
