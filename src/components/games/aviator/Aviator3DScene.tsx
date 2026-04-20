@@ -9,6 +9,14 @@ import {
   Trail, Sparkles, Stars, Float, useGLTF, Environment
 } from '@react-three/drei';
 import * as THREE from 'three';
+import {
+  SkyDome,
+  Moon,
+  VolumetricClouds,
+  MountainRange,
+  CityScape,
+  GroundPlane,
+} from '../shared/Environment3D';
 
 // ============= CONSTANTS =============
 const MAX_TRAIL_LENGTH = 20;
@@ -345,32 +353,40 @@ const SceneContent = memo(function SceneContent({
   return (
     <>
       {/* Lighting */}
-      <ambientLight intensity={0.4} color="#4466aa" />
+      <ambientLight intensity={0.55} color="#5a6bb5" />
       <directionalLight
-        position={[10, 20, 10]}
-        intensity={2}
-        color="#ffffff"
+        position={[30, 40, 20]}
+        intensity={1.8}
+        color="#ffd9a8"
         castShadow
         shadow-mapSize={[2048, 2048]}
       />
-      <directionalLight position={[-10, 10, -10]} intensity={0.8} color="#ff8844" />
-      <pointLight position={[0, 10, 5]} intensity={2} color="#4cc9f0" distance={30} />
-      <pointLight position={[15, 5, 0]} intensity={1.5} color="#ff00ff" distance={25} />
-      <pointLight position={[-15, 5, 0]} intensity={1.5} color="#00ffff" distance={25} />
-      
-      {/* Environment */}
-      <color attach="background" args={['#020208']} />
-      <fog attach="fog" args={['#020208', 25, 90]} />
-      
-      <MemoizedStars />
-      <MemoizedGround />
-      <FloatingCrystals />
-      
+      <directionalLight position={[-30, 20, -20]} intensity={0.7} color="#5577ff" />
+      <pointLight position={[0, 10, 5]} intensity={1.2} color="#4cc9f0" distance={30} />
+
+      {/* Full Environment — sky, moon, clouds, mountains, city */}
+      <SkyDome
+        topColor="#0a0f2e"
+        horizonColor="#3a1a4e"
+        bottomColor="#060816"
+        sunPosition={[0.35, 0.18]}
+        sunColor="#ff8c44"
+      />
+      <Moon position={[70, 60, -140]} color="#f0f4ff" size={6} />
+      <fog attach="fog" args={['#0a0f26', 40, 160]} />
+
+      <MountainRange z={-95} color="#0a1230" width={280} height={30} />
+      <MountainRange z={-70} color="#0d1738" width={250} height={22} />
+      <CityScape count={36} spread={200} depthStart={-45} depthEnd={-90} />
+      <VolumetricClouds count={16} spreadX={220} spreadZ={70} y={28} speed={0.8} />
+
+      <GroundPlane color="#0a0a18" size={300} gridColor1="#1a1a4a" gridColor2="#0a0a2a" />
+
       {/* Spaceship at X10+ */}
       <Suspense fallback={null}>
         <Spaceship visible={showSpaceship} />
       </Suspense>
-      
+
       <Airplane multiplier={multiplier} phase={phase} onPositionUpdate={handlePositionUpdate} />
     </>
   );

@@ -9,6 +9,14 @@ import {
   Trail, Sparkles, Stars, Float, useGLTF
 } from '@react-three/drei';
 import * as THREE from 'three';
+import {
+  SkyDome,
+  Moon,
+  VolumetricClouds,
+  MountainRange,
+  CityScape,
+  GroundPlane,
+} from '../shared/Environment3D';
 
 // ============= CONSTANTS =============
 const MAX_TRAIL_LENGTH = 25;
@@ -409,28 +417,38 @@ const SceneContent = memo(function SceneContent({
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.4} color="#5577cc" />
+      {/* Lighting — neon-city dusk */}
+      <ambientLight intensity={0.45} color="#6a7fd0" />
       <directionalLight
-        position={[10, 20, 10]}
-        intensity={2}
-        color="#ffffff"
+        position={[25, 35, 15]}
+        intensity={1.6}
+        color="#ffb88a"
         castShadow
         shadow-mapSize={[2048, 2048]}
       />
-      <directionalLight position={[-10, 10, -10]} intensity={0.8} color="#ff8844" />
-      <pointLight position={[0, 10, 5]} intensity={2} color="#4cc9f0" distance={30} />
-      <pointLight position={[20, 5, 0]} intensity={1.5} color="#ff00ff" distance={25} />
-      <pointLight position={[-20, 5, 0]} intensity={1.5} color="#00ffff" distance={25} />
-      
-      {/* Environment */}
-      <color attach="background" args={['#030310']} />
-      <fog attach="fog" args={['#030310', 20, 80]} />
-      
-      <MemoizedStars />
-      <MemoizedGround />
+      <directionalLight position={[-25, 15, -15]} intensity={0.7} color="#6644ff" />
+      <pointLight position={[0, 14, 6]} intensity={1.4} color="#4cc9f0" distance={30} />
+      <pointLight position={[20, 6, 0]} intensity={1.1} color="#ff00ff" distance={25} />
+
+      {/* Full Environment — neon night over a cyberpunk skyline */}
+      <SkyDome
+        topColor="#060616"
+        horizonColor="#2a0f3e"
+        bottomColor="#020208"
+        sunPosition={[0.7, 0.12]}
+        sunColor="#d14cff"
+      />
+      <Moon position={[-60, 55, -130]} color="#e8eeff" size={5.5} />
+      <fog attach="fog" args={['#05061a', 25, 140]} />
+
+      <MountainRange z={-100} color="#06091e" width={260} height={24} />
+      <CityScape count={44} spread={180} depthStart={-30} depthEnd={-85} />
+      <VolumetricClouds count={12} spreadX={200} spreadZ={60} y={26} speed={0.6} color="#d0c7ff" />
+
+      <GroundPlane color="#060614" size={260} gridColor1="#261b4e" gridColor2="#0f0a2a" divisions={80} />
+
       <FloatingCrystals />
-      
+
       <JetpackCharacter
         multiplier={multiplier}
         phase={phase}
