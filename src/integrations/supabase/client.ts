@@ -2,16 +2,56 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+// ─── Environment Variables ────────────────────────────────────────────────────
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  throw new Error(
+    '[Supabase] Missing environment variables: VITE_SUPABASE_URL and/or VITE_SUPABASE_PUBLISHABLE_KEY'
+  );
+}
+
+// ─── SSR-Safe Storage Adapter ─────────────────────────────────────────────────
+// localStorage is only available in the browser, not during SSR (Node.js).
+// This adapter safely no-ops on the server side.
+const isBrowser = typeof window !== 'undefined';
+
+const localStorageAdapter = {
+  getItem: (key: string): string | null =>
+    isBrowser ? localStorage.getItem(key) : null,
+
+  setItem: (key: string, value: string): void => {
+    if (isBrowser) localStorage.setItem(key, value);
+  },
+
+  removeItem: (key: string): void => {
+    if (isBrowser) localStorage.removeItem(key);
+  },
+};
+
+// ─── Supabase Client ──────────────────────────────────────────────────────────
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
-
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
+    storage: localStorageAdapter,
     persistSession: true,
     autoRefreshToken: true,
-  }
+    detectSessionInUrl: isBrowser,
+    flowType: 'pkce', // Most secure auth flow — prevents CSRF attacks
+  },
+  global: {
+    headers: {
+      'x-client-info': 'casino-app', // Helps identify requests in Supabase logs
+    },
+  },
+  db: {
+    schema: 'public',
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10, // Throttle realtime events to avoid flooding
+    },
+  },
 });
