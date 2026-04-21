@@ -18,6 +18,7 @@ import { OlympusSlotScene, type SpinOutcome, GRID_W, GRID_H } from './OlympusSlo
 import SlotControls, { type AutoCount } from '../core/SlotControls';
 import PaytableModal, { type PaytableEntry } from '../core/PaytableModal';
 import { createBigWinOverlay } from '../core/BigWinOverlay';
+import ProvablyFairButton from '@/components/provably-fair/ProvablyFairButton';
 import { SYMBOLS, SCATTER } from './symbols';
 
 // Tight stage padding so the reels dominate the canvas and Phaser's FIT
