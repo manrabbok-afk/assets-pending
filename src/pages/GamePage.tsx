@@ -3,7 +3,7 @@
  * Game components are lazy-loaded so each is split into its own chunk and
  * only downloaded when first opened, dramatically reducing initial JS.
  */
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType } from 'react';
 import { useParams } from 'react-router-dom';
 
 const DiceGame = lazy(() => import('@/components/games/dice/DiceGame'));
@@ -20,15 +20,12 @@ const WheelGame = lazy(() => import('@/components/games/wheel/WheelGame'));
 const DragonTigerGame = lazy(() => import('@/components/games/dragon-tiger/DragonTigerGame'));
 const TowerGame = lazy(() => import('@/components/games/tower/TowerGame'));
 const JetpackGame = lazy(() => import('@/components/games/jetpack/JetpackGame'));
-const SlotMachine = lazy(() => import('@/components/games/slots/SlotMachine'));
 import OlympusSlot from '@/components/games/slots/olympus/OlympusSlot';
 const BonanzaSlot = lazy(() => import('@/components/games/slots/bonanza/BonanzaSlot'));
 const BigBassSlot = lazy(() => import('@/components/games/slots/bigbass/BigBassSlot'));
 const ThemedSlotMachine = lazy(() => import('@/components/games/slots/themed/ThemedSlotMachine'));
 
-import { getTheme } from '@/components/games/slots/themed/themes';
-
-const GAME_MAP: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+const GAME_MAP: Record<string, ComponentType> = {
   dice: DiceGame, crash: CrashGame, mines: MinesGame, plinko: PlinkoGame,
   blackjack: BlackjackGame, roulette: RouletteGame, coinflip: CoinflipGame,
   limbo: LimboGame, hilo: HiloGame, keno: KenoGame, wheel: WheelGame,
