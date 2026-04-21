@@ -116,20 +116,19 @@ export default function OlympusSlot() {
       parent,
       backgroundColor: '#0a0e1f',
       transparent: false,
-      scene: [OlympusSlotScene],
+      scene: OlympusSlotScene,
       scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
       callbacks: {
-        postBoot: (g) => {
-          // Stop the auto-started instance (no events) and re-start with events
-          // so onPhaseChange / onSpinComplete callbacks are wired properly.
-          g.scene.stop('OlympusSlotScene');
-          g.scene.start('OlympusSlotScene', { events: sceneEvents });
-          sceneRef.current = g.scene.getScene('OlympusSlotScene') as OlympusSlotScene;
+        postBoot: (game) => {
+          gameRef.current = game;
+          requestAnimationFrame(() => {
+            sceneRef.current = game.scene.getScene('OlympusSlotScene') as OlympusSlotScene;
+          });
         },
       },
     };
     const game = new Phaser.Game(config);
-    gameRef.current = game;
+    game.scene.start('OlympusSlotScene', { events: sceneEvents });
 
     return () => {
       autoRef.current.stop = true;
