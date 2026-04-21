@@ -18,9 +18,7 @@ import { OlympusSlotScene, type SpinOutcome, GRID_W, GRID_H } from './OlympusSlo
 import SlotControls, { type AutoCount } from '../core/SlotControls';
 import PaytableModal, { type PaytableEntry } from '../core/PaytableModal';
 import { createBigWinOverlay } from '../core/BigWinOverlay';
-import ProvablyFairButton from '@/components/provably-fair/ProvablyFairButton';
-import { SYMBOLS, SCATTER, MULTIPLIER_TEXTURE, BACKGROUND_TEXTURE } from './symbols';
-import { AssetLoader } from '../../shared/AssetLoader';
+import { SYMBOLS, SCATTER } from './symbols';
 
 // Tight stage padding so the reels dominate the canvas and Phaser's FIT
 // scaler doesn't shrink the symbols when fitted to the container width.
@@ -47,14 +45,6 @@ const PAYTABLE_RULES = [
   'Pays for 8 or more matching symbols anywhere on the 6×5 grid.',
   'Winning symbols explode and new ones tumble in (cascades chain wins).',
   'During Free Spins, multiplier orbs add to a global accumulator applied at the end.',
-];
-
-// Assets to preload for the loading screen
-const GAME_ASSETS: string[] = [
-  BACKGROUND_TEXTURE,
-  MULTIPLIER_TEXTURE,
-  ...SYMBOLS.map(s => s.texture),
-  SCATTER.texture,
 ];
 
 export default function OlympusSlot() {
@@ -192,76 +182,73 @@ export default function OlympusSlot() {
   const lastMult = lastOutcome && parseFloat(betAmount) > 0 ? lastOutcome.totalPayout / parseFloat(betAmount) : 0;
 
   return (
-    <AssetLoader assets={GAME_ASSETS} gameName="Gates of Olympus">
-      <div className="w-full max-w-6xl mx-auto p-3 sm:p-4 rounded-2xl bg-void border border-yellow-400/30 shadow-2xl">
-        <div className="flex items-center gap-2 mb-3">
-          <Zap className="w-5 h-5 text-yellow-300" />
-          <h1 className="font-display font-extrabold text-lg text-yellow-200 tracking-wider">Gates of Olympus</h1>
-          {phase !== 'idle' && (
-            <span className="text-[10px] uppercase tracking-widest text-yellow-300/80">{phase}</span>
-          )}
-          <div className="ml-auto"><ProvablyFairButton gameId="gates-olympus" /></div>
-        </div>
+    <div className="w-full max-w-6xl mx-auto p-3 sm:p-4 rounded-2xl bg-void border border-yellow-400/30 shadow-2xl">
+      <div className="flex items-center gap-2 mb-3">
+        <Zap className="w-5 h-5 text-yellow-300" />
+        <h1 className="font-display font-extrabold text-lg text-yellow-200 tracking-wider">Gates of Olympus</h1>
+        {phase !== 'idle' && (
+          <span className="text-[10px] uppercase tracking-widest text-yellow-300/80">{phase}</span>
+        )}
+        <div className="ml-auto"><ProvablyFairButton gameId="gates-olympus" /></div>
+      </div>
 
-        {/* Phaser Game Canvas - Full Width */}
-        <div className="relative flex items-center justify-center slot-canvas-wrapper mb-4">
-          <div
-            ref={containerRef}
-            className="relative rounded-2xl overflow-hidden border-2 border-yellow-400/30 w-full"
-            style={{ aspectRatio: `${STAGE_W} / ${STAGE_H}`, width: '100%', maxWidth: 'min(100%, ' + STAGE_W + 'px)', maxHeight: 'min(70vh, calc(100vw * ' + (STAGE_H / STAGE_W) + '))' }}
-          />
-
-          <AnimatePresence>
-            {latestMultiplierDrop !== null && (
-              <motion.div
-                key={latestMultiplierDrop}
-                initial={{ scale: 0, opacity: 0, y: 0 }}
-                animate={{ scale: 1.2, opacity: 1, y: -50 }}
-                exit={{ opacity: 0, y: -120, scale: 0.6 }}
-                transition={{ duration: 0.6 }}
-                className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-gradient-to-r from-yellow-400 to-purple-500 text-black font-display font-extrabold text-xl shadow-lg pointer-events-none"
-              >
-                ⚡ +{latestMultiplierDrop}×
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <WinCelebration
-            show={!!lastOutcome && lastOutcome.totalPayout > 0 && phase === 'idle' && lastMult < 10}
-            amount={lastOutcome?.totalPayout ?? 0}
-            currency={selectedCurrency}
-            multiplier={lastMult}
-            big={false}
-          />
-        </div>
-
-        <SlotControls
-          betAmount={betAmount}
-          setBetAmount={setBetAmount}
-          onSpin={handleSpin}
-          onAutoSpin={runAutoSpin}
-          onStopAuto={stopAuto}
-          onToggleTurbo={() => setTurboMode(t => !t)}
-          onOpenPaytable={() => setPaytableOpen(true)}
-          spinning={playing}
-          autoSpinning={autoSpinning}
-          autoRemaining={autoRemaining}
-          turboMode={turboMode}
-          phase={phase}
-          balance={balance}
-          currency={selectedCurrency}
-          lastWin={lastOutcome?.totalPayout ?? 0}
-          freeSpinsRemaining={freeSpinsLeft}
+      <div className="relative flex items-center justify-center slot-canvas-wrapper mb-4">
+        <div
+          ref={containerRef}
+          className="relative rounded-2xl overflow-hidden border-2 border-yellow-400/30 w-full"
+          style={{ aspectRatio: `${STAGE_W} / ${STAGE_H}`, width: '100%', maxWidth: 'min(100%, ' + STAGE_W + 'px)', maxHeight: 'min(70vh, calc(100vw * ' + (STAGE_H / STAGE_W) + '))' }}
         />
 
-        <PaytableModal
-          open={paytableOpen}
-          onClose={() => setPaytableOpen(false)}
-          title="Gates of Olympus — Paytable"
-          entries={PAYTABLE_ENTRIES}
-          rules={PAYTABLE_RULES}
+        <AnimatePresence>
+          {latestMultiplierDrop !== null && (
+            <motion.div
+              key={latestMultiplierDrop}
+              initial={{ scale: 0, opacity: 0, y: 0 }}
+              animate={{ scale: 1.2, opacity: 1, y: -50 }}
+              exit={{ opacity: 0, y: -120, scale: 0.6 }}
+              transition={{ duration: 0.6 }}
+              className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-gradient-to-r from-yellow-400 to-purple-500 text-black font-display font-extrabold text-xl shadow-lg pointer-events-none"
+            >
+              ⚡ +{latestMultiplierDrop}×
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <WinCelebration
+          show={!!lastOutcome && lastOutcome.totalPayout > 0 && phase === 'idle' && lastMult < 10}
+          amount={lastOutcome?.totalPayout ?? 0}
+          currency={selectedCurrency}
+          multiplier={lastMult}
+          big={false}
         />
       </div>
-    </AssetLoader>
+
+      <SlotControls
+        betAmount={betAmount}
+        setBetAmount={setBetAmount}
+        onSpin={handleSpin}
+        onAutoSpin={runAutoSpin}
+        onStopAuto={stopAuto}
+        onToggleTurbo={() => setTurboMode(t => !t)}
+        onOpenPaytable={() => setPaytableOpen(true)}
+        spinning={playing}
+        autoSpinning={autoSpinning}
+        autoRemaining={autoRemaining}
+        turboMode={turboMode}
+        phase={phase}
+        balance={balance}
+        currency={selectedCurrency}
+        lastWin={lastOutcome?.totalPayout ?? 0}
+        freeSpinsRemaining={freeSpinsLeft}
+      />
+
+      <PaytableModal
+        open={paytableOpen}
+        onClose={() => setPaytableOpen(false)}
+        title="Gates of Olympus — Paytable"
+        entries={PAYTABLE_ENTRIES}
+        rules={PAYTABLE_RULES}
+      />
+    </div>
   );
 }
