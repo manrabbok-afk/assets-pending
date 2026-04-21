@@ -21,7 +21,7 @@ const DragonTigerGame = lazy(() => import('@/components/games/dragon-tiger/Drago
 const TowerGame = lazy(() => import('@/components/games/tower/TowerGame'));
 const JetpackGame = lazy(() => import('@/components/games/jetpack/JetpackGame'));
 const SlotMachine = lazy(() => import('@/components/games/slots/SlotMachine'));
-const OlympusSlot = lazy(() => import('@/components/games/slots/olympus/OlympusSlot'));
+import OlympusSlot from '@/components/games/slots/olympus/OlympusSlot';
 const BonanzaSlot = lazy(() => import('@/components/games/slots/bonanza/BonanzaSlot'));
 const BigBassSlot = lazy(() => import('@/components/games/slots/bigbass/BigBassSlot'));
 const ThemedSlotMachine = lazy(() => import('@/components/games/slots/themed/ThemedSlotMachine'));
