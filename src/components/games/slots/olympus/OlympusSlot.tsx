@@ -101,7 +101,7 @@ export default function OlympusSlot() {
     };
 
     const config: Phaser.Types.Core.GameConfig = {
-      type: Phaser.AUTO,
+      type: Phaser.CANVAS,
       width: STAGE_W,
       height: STAGE_H,
       parent,
