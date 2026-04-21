@@ -21,7 +21,6 @@ import { createBigWinOverlay } from '../core/BigWinOverlay';
 import ProvablyFairButton from '@/components/provably-fair/ProvablyFairButton';
 import { SYMBOLS, SCATTER, MULTIPLIER_TEXTURE, BACKGROUND_TEXTURE } from './symbols';
 import { AssetLoader } from '../../shared/AssetLoader';
-import { gameSounds } from '@/lib/game-sounds';
 
 // Tight stage padding so the reels dominate the canvas and Phaser's FIT
 // scaler doesn't shrink the symbols when fitted to the container width.
